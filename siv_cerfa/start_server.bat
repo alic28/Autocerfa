@@ -1,36 +1,32 @@
 @echo off
-title SIV CERFA - Service local
+chcp 65001 >nul
+title SIV CERFA - Serveur local
 
-echo ============================================
-echo   SIV CERFA  -  Dreux Carte Grise
-echo   Generateur de formulaires CERFA
-echo ============================================
+echo ==========================================
+echo   SIV vers CERFA - Serveur local v2.0
+echo   Dreux Carte Grise
+echo ==========================================
 echo.
 
 cd /d "%~dp0"
 
-python --version 2>nul
-if %errorlevel% neq 0 (
-    echo ERREUR : Python non trouve.
-    echo Installez Python sur https://www.python.org/downloads/
-    echo Cochez "Add Python to PATH" lors de l installation.
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo ERREUR : Python n est pas installe ou absent du PATH.
+    echo Telechargez Python sur https://python.org
     pause
-    exit /b 1
+    exit /b
 )
 
-echo.
 echo Installation des dependances...
-pip install flask pillow reportlab --quiet --no-warn-script-location
-echo Dependances OK.
+python -m pip install flask pdf2image pypdf pillow --quiet
+
 echo.
-echo Demarrage du service sur http://localhost:5000
-echo Laissez cette fenetre ouverte pendant l utilisation du SIV.
-echo Appuyez sur Ctrl+C pour arreter.
-echo ============================================
+echo Demarrage du serveur sur http://localhost:5000
+echo Laisser cette fenetre ouverte pendant l utilisation.
+echo Appuyer sur Ctrl+C pour arreter.
 echo.
 
 python server\server.py
 
-echo.
-echo Service arrete.
 pause

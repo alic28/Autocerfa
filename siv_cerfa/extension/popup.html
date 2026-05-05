@@ -2,187 +2,49 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIV → CERFA</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      width: 300px;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 13px;
-      background: #1a1a2e;
-      color: #ecf0f1;
-    }
-
-    /* Header */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { width: 280px; background: #1a1a2e; color: #eee; }
     .header {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border-bottom: 2px solid #e67e22;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      background: #E55A00; padding: 12px 14px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .header-logo { font-size: 22px; }
-    .header-title { font-size: 15px; font-weight: bold; color: #e67e22; }
-    .header-sub { font-size: 11px; color: #7f8c8d; margin-top: 2px; }
-
-    /* Body */
-    .body { padding: 14px 16px; }
-
-    /* Statut service */
-    .service-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      font-size: 12px;
+    .header h1 { font-size: 15px; color: #fff; }
+    .header small { font-size: 10px; color: #ffd; display: block; margin-top: 2px; }
+    .body { padding: 14px; }
+    .status-box {
+      background: #0f3460; border-radius: 6px; padding: 10px 12px;
+      font-size: 12px; margin-bottom: 12px; min-height: 40px;
     }
-    .service-ok    { background: #1e3a2a; border: 1px solid #27ae60; color: #2ecc71; }
-    .service-error { background: #3a1e1e; border: 1px solid #c0392b; color: #e74c3c; }
-    .service-check { background: #2a2a1e; border: 1px solid #f39c12; color: #f39c12; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .dot-ok    { background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
-    .dot-error { background: #e74c3c; }
-    .dot-check { background: #f39c12; animation: pulse 1s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-    /* Données mémorisées */
-    .section-title {
-      font-size: 11px;
-      font-weight: bold;
-      color: #7f8c8d;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-    .data-card {
-      background: #16213e;
-      border: 1px solid #2c3e50;
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-    }
-    .data-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 2px 0;
-      font-size: 12px;
-    }
-    .data-label { color: #7f8c8d; flex-shrink: 0; }
-    .data-value { color: #ecf0f1; text-align: right; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
-    .data-empty { color: #c0392b; font-style: italic; }
-
-    /* Boutons */
     .btn {
-      display: block;
-      width: 100%;
-      padding: 9px 14px;
-      border: none;
-      border-radius: 5px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-bottom: 8px;
-      transition: all .15s;
+      display: block; width: 100%; padding: 9px;
+      background: #E55A00; color: #fff; border: none;
+      border-radius: 5px; font-size: 13px; font-weight: bold;
+      cursor: pointer; margin-bottom: 8px; text-align: center;
     }
-    .btn-primary { background: #e67e22; color: #fff; }
-    .btn-primary:hover { background: #d35400; }
-    .btn-primary:disabled { background: #7f4a0e; cursor:not-allowed; opacity:.6; }
-    .btn-danger  { background: #c0392b; color: #fff; font-size: 11px; padding:6px 14px; }
-    .btn-danger:hover { background: #a93226; }
-
-    /* Footer */
-    .footer {
-      border-top: 1px solid #2c3e50;
-      padding: 8px 16px;
-      font-size: 11px;
-      color: #4a5568;
-      text-align: center;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 7px;
-      border-radius: 10px;
-      font-size: 10px;
-      font-weight: bold;
-      margin-left: 4px;
-    }
-    .badge-ok  { background: #27ae60; color: #fff; }
-    .badge-no  { background: #c0392b; color: #fff; }
+    .btn:hover { background: #cc4f00; }
+    .btn.secondary { background: #0f3460; font-size: 12px; font-weight: normal; }
+    .btn.secondary:hover { background: #1a4a80; }
+    .footer { padding: 8px 14px 10px; text-align: center; font-size: 10px; color: #666; }
+    #status { color: #adf; }
   </style>
 </head>
 <body>
-
   <div class="header">
-    <div class="header-logo">📄</div>
     <div>
-      <div class="header-title">SIV → CERFA</div>
-      <div class="header-sub">Dreux Carte Grise</div>
+      <h1>🖨 SIV → CERFA</h1>
+      <small>Dreux Carte Grise v2.0</small>
     </div>
   </div>
-
   <div class="body">
-
-    <!-- Statut du service Python local -->
-    <div id="service-status" class="service-status service-check">
-      <div class="dot dot-check"></div>
-      <span>Vérification du service local...</span>
+    <div class="status-box">
+      <span id="status">Naviguer sur l'écran de récapitulatif SIV pour activer la génération.</span>
     </div>
-
-    <!-- Données mémorisées -->
-    <div class="section-title">Données mémorisées</div>
-
-    <div class="data-card" id="card-vehicule">
-      <div class="data-row">
-        <span class="data-label">Immatriculation</span>
-        <span class="data-value data-empty" id="d-immat">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-label">VIN</span>
-        <span class="data-value data-empty" id="d-vin">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-label">Marque</span>
-        <span class="data-value data-empty" id="d-marque">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-label">Dossier</span>
-        <span class="data-value data-empty" id="d-dossier">—</span>
-      </div>
-    </div>
-
-    <div class="data-card">
-      <div class="data-row">
-        <span class="data-label">Titulaire</span>
-        <span class="data-value data-empty" id="d-titulaire">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-label">Adresse</span>
-        <span class="data-value data-empty" id="d-adresse">—</span>
-      </div>
-    </div>
-
-    <!-- Bouton principal -->
-    <button class="btn btn-primary" id="btn-generer" disabled>
-      🖨️ Générer les CERFA
-    </button>
-
-    <button class="btn btn-danger" id="btn-clear">
-      🗑️ Effacer les données mémorisées
-    </button>
-
+    <button class="btn" id="btnGenerer" disabled>Générer les CERFA</button>
+    <button class="btn secondary" id="btnServer">🔌 Vérifier le serveur</button>
+    <button class="btn secondary" id="btnList">📋 Derniers CERFA générés</button>
   </div>
-
-  <div class="footer">
-    Service : <span id="footer-service">...</span> &nbsp;|&nbsp; v1.0.0
-  </div>
-
+  <div class="footer">Service local requis sur le port 5000</div>
   <script src="popup.js"></script>
 </body>
 </html>

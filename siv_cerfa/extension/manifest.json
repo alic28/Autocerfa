@@ -1,13 +1,12 @@
 {
   "manifest_version": 3,
   "name": "SIV → CERFA | Dreux Carte Grise",
-  "version": "1.2.0",
-  "description": "Génère automatiquement les CERFA 13750 et 13757 depuis les écrans SIV Pro.",
+  "version": "2.0.0",
+  "description": "Génère automatiquement les CERFA 13750 et 13757 depuis l'écran de validation SIV Pro.",
 
   "permissions": [
     "activeTab",
-    "storage",
-    "scripting"
+    "storage"
   ],
 
   "host_permissions": [
@@ -28,10 +27,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://pro-siv.interieur.gouv.fr/map-ppa-ui/do/ivo_cht_recherche_init",
-        "https://pro-siv.interieur.gouv.fr/map-ppa-ui/do/sp_saisiepers",
-        "https://pro-siv.interieur.gouv.fr/map-ppa-ui/do/sp_action",
-        "https://pro-siv.interieur.gouv.fr/map-ppa-ui/do/ivo_cht_toVal"
+        "https://pro-siv.interieur.gouv.fr/*"
       ],
       "js": ["content.js"],
       "css": ["content.css"],

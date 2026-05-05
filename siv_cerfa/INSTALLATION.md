@@ -1,131 +1,92 @@
-# 📄 SIV → CERFA — Guide d'installation
-
-Extension Microsoft Edge + Service local pour générer automatiquement
-les formulaires CERFA 13750 et 13757 depuis les écrans du SIV.
+# SIV → CERFA — Guide d'installation v2.0
+## Dreux Carte Grise
 
 ---
 
-## ⚡ Installation en 3 étapes
+## Prérequis
 
-### Étape 1 — Installer Python (si pas déjà fait)
-
-1. Aller sur https://www.python.org/downloads/
-2. Télécharger Python 3.10 ou plus récent (Windows)
-3. **Cocher "Add Python to PATH"** lors de l'installation
-4. Installer
+- **Windows 10/11**
+- **Python 3.9+** — [python.org](https://python.org) (cocher "Add to PATH" à l'installation)
+- **Microsoft Edge** (ou Chrome)
+- **Connexion SIV Pro** avec certificat numérique
 
 ---
 
-### Étape 2 — Installer l'extension dans Edge
+## Installation (5 minutes)
 
-1. Ouvrir **Microsoft Edge**
-2. Aller dans le menu `···` → **Extensions** → **Gérer les extensions**
-3. Activer le **Mode développeur** (interrupteur en bas à gauche)
-4. Cliquer sur **"Charger l'extension non empaquetée"**
-5. Sélectionner le dossier **`extension`** (dans ce dossier siv_cerfa)
-6. L'extension apparaît avec l'icône 📄 orange dans la barre Edge
+### 1. Extraire le ZIP
 
----
+Extraire le dossier `siv_cerfa/` dans un emplacement **sans espace ni accent**  
+✅ `C:\outils\siv_cerfa\`  
+❌ `C:\Mes Documents\SIV CERFA\`
 
-### Étape 3 — Démarrer le service local
+### 2. Démarrer le serveur local
 
 Double-cliquer sur **`start_server.bat`**
 
-Une fenêtre noire s'ouvre et affiche :
-```
-============================================================
-  SIV → CERFA  |  Dreux Carte Grise
-  Service local de generation des formulaires CERFA
-============================================================
-  URL    : http://localhost:5000
-  Laissez cette fenetre ouverte pendant votre utilisation du SIV.
-```
+- L'invite de commande installe les dépendances automatiquement
+- Le message `Serving Flask on http://127.0.0.1:5000` confirme que c'est prêt
+- **Laisser cette fenêtre ouverte** pendant toute la session
 
-> ⚠️ **Laisser cette fenêtre ouverte** pendant toute la durée d'utilisation du SIV.
+### 3. Installer l'extension Edge
 
----
+1. Ouvrir Edge → taper `edge://extensions/` dans la barre d'adresse
+2. Activer **"Mode développeur"** (bouton en bas à gauche)
+3. Cliquer **"Charger l'extension non empaquetée"**
+4. Sélectionner le dossier **`siv_cerfa\extension\`**
+5. L'icône 🖨 apparaît dans la barre d'outils Edge
 
-## 🔄 Utilisation au quotidien
-
-### Pour un changement de titulaire :
-
-```
-1. Ouvrez le SIV et naviguez vers "Changer le titulaire > Série normale"
-
-2. Écran 1 (Infos véhicule) :
-   → La barre orange apparaît en haut de page
-   → Les données sont lues automatiquement ✓
-
-3. Écrans 2, 3 (Usages, Titulaire) :
-   → Remplissez normalement
-   → Cliquez "💾 Mémoriser cet écran" sur l'écran du titulaire
-
-4. Écran Récapitulatif :
-   → Le bouton "🖨️ Générer les CERFA" apparaît en haut
-   → Cliquez dessus
-
-5. → 2 nouveaux onglets s'ouvrent avec :
-      • Le CERFA 13750 (Demande de certificat d'immatriculation)
-      • Le CERFA 13757 (Mandat d'immatriculation)
-
-6. Imprimez ou téléchargez depuis les onglets
-```
+> Pour Chrome : même procédure sur `chrome://extensions/`
 
 ---
 
-## 🗂️ Où sont sauvegardés les CERFA ?
+## Utilisation
 
-Dans le dossier **`output\`** du projet, avec un nom incluant la date et l'immatriculation :
-```
-output\
-  20241115_143022_GP910RT_cerfa_13750.pdf
-  20241115_143022_GP910RT_cerfa_13757.pdf
-```
-
----
-
-## 🔧 En cas de problème
-
-### L'icône orange n'apparaît pas dans Edge
-→ Vérifier que l'extension est bien activée dans `edge://extensions/`
-→ Vérifier que le Mode développeur est activé
-
-### "Service non démarré" dans la barre orange
-→ Lancer `start_server.bat` et laisser la fenêtre ouverte
-→ Vérifier qu'aucun antivirus ne bloque localhost:5000
-
-### Les données ne sont pas toutes remplies
-→ Utiliser le bouton "💾 Mémoriser cet écran" sur chaque écran important
-→ Le récapitulatif (écran 4) est le plus complet — toujours s'y rendre avant de générer
-
-### Les CERFA s'ouvrent mais les données manquent
-→ Les noms de champs du SIV ont peut-être changé
-→ Contacter le développeur avec une capture d'écran
+1. Se connecter sur **[SIV Pro](https://pro-siv.interieur.gouv.fr)**
+2. Saisir la démarche (ex: Changer le titulaire)
+3. Naviguer jusqu'à l'**écran Récapitulatif** (`ivo_cht_toVal`)
+4. La **barre orange** apparaît en haut de la page
+5. Cliquer **"Générer les CERFA"**
+6. Les PDF s'ouvrent automatiquement dans de nouveaux onglets
 
 ---
 
-## 🚀 Démarrage rapide quotidien
+## Fichiers générés
 
-1. Double-clic sur `start_server.bat` → laisser ouvert
-2. Ouvrir Edge → naviguer sur le SIV
-3. Travailler normalement → cliquer "🖨️ Générer les CERFA" sur le récap
+Les CERFA sont enregistrés dans le dossier `output/` avec le format :  
+`AAAAMMJJ_HHMMSS_IMMAT_cerfa_13757.pdf`  
+`AAAAMMJJ_HHMMSS_IMMAT_cerfa_13750.pdf`
 
 ---
 
-## 📁 Structure du projet
+## Dépannage
 
-```
-siv_cerfa\
-├── start_server.bat          ← Démarrage en 1 clic (Windows)
-├── server\
-│   └── server.py             ← Service Flask local (port 5000)
-├── extension\
-│   ├── manifest.json         ← Déclaration de l'extension Edge
-│   ├── content.js            ← Script de lecture des pages SIV
-│   ├── content.css           ← Styles de la barre orange
-│   ├── popup.html/js         ← Interface popup de l'extension
-│   └── icons\                ← Icônes de l'extension
-├── src\                      ← Générateur CERFA (Python)
-├── templates\                ← Images JPEG des formulaires CERFA
-└── output\                   ← PDFs générés (créé automatiquement)
-```
+| Problème | Solution |
+|----------|----------|
+| Barre orange absente | Vérifier que l'URL contient bien `ivo_cht_toVal` |
+| "Serveur introuvable" | Relancer `start_server.bat` |
+| PDF vide ou données manquantes | Vérifier la console (F12 → Console) |
+| Python non reconnu | Réinstaller Python en cochant "Add to PATH" |
+
+---
+
+## Types de démarches supportés
+
+| Démarche | CERFA 13757 | CERFA 13750 |
+|----------|:-----------:|:-----------:|
+| Changement de propriétaire | ✅ | ✅ |
+| Déclaration de cession | ✅ | — |
+
+---
+
+## Templates PDF
+
+Les templates personnalisés se trouvent dans `templates/` :
+- `cerfa_13757_template.pdf` — Mandat pré-rempli "DREUX CARTE GRISE"
+- `cerfa_13750_template.pdf` — Demande de certificat d'immatriculation
+
+Pour mettre à jour un template, remplacer le fichier PDF correspondant.
+
+---
+
+*Dreux Carte Grise — http://rapidcartegrise.fr — 09.83.31.79.65*

@@ -1,0 +1,125 @@
+/* ───────────────────────────────────────────────────────────────
+   SIV → CERFA — Barre d'outils injectée en haut de chaque page SIV
+   ─────────────────────────────────────────────────────────────── */
+
+#siv-cerfa-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 2px solid #e67e22;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+/* Pousser le contenu SIV vers le bas pour ne pas masquer le header */
+body {
+  padding-top: 44px !important;
+}
+
+.siv-cerfa-logo {
+  color: #e67e22;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  text-shadow: 0 0 8px rgba(230, 126, 34, 0.4);
+}
+
+.siv-cerfa-dossier {
+  color: #95a5a6;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.siv-cerfa-spacer {
+  flex: 1;
+}
+
+/* ── Boutons ── */
+.siv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-shadow: none;
+  outline: none;
+}
+
+.siv-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Bouton principal : Générer CERFA (orange vif, prioritaire) */
+.siv-btn-primary {
+  background: #e67e22;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(230, 126, 34, 0.5);
+  font-size: 14px;
+  padding: 6px 18px;
+}
+
+.siv-btn-primary:hover:not(:disabled) {
+  background: #d35400;
+  box-shadow: 0 3px 10px rgba(211, 84, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.siv-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Bouton secondaire : Mémoriser */
+.siv-btn-secondary {
+  background: #2c3e50;
+  color: #bdc3c7;
+  border: 1px solid #34495e;
+}
+
+.siv-btn-secondary:hover:not(:disabled) {
+  background: #34495e;
+  color: #ecf0f1;
+}
+
+/* Statut (texte de retour) */
+#siv-cerfa-status {
+  color: #ecf0f1;
+  font-size: 12px;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Toast notification ── */
+#siv-cerfa-toast {
+  position: fixed;
+  top: 54px;
+  right: 16px;
+  z-index: 999999;
+  background: #27ae60;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font: bold 13px/1.4 Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  max-width: 360px;
+}

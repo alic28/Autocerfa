@@ -1,0 +1,62 @@
+/* SIV → CERFA — Styles barre orange */
+#siv-cerfa-bar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 2147483647 !important;
+  background: linear-gradient(90deg, #E55A00 0%, #F26E1B 100%) !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 16px !important;
+  font: bold 14px "Segoe UI", Arial, sans-serif !important;
+  gap: 14px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
+}
+
+#siv-cerfa-bar .siv-cerfa-title {
+  font-size: 15px !important;
+  letter-spacing: 0.5px !important;
+}
+
+#siv-cerfa-bar #siv-cerfa-btn {
+  background: #fff !important;
+  color: #E55A00 !important;
+  border: none !important;
+  padding: 6px 18px !important;
+  border-radius: 4px !important;
+  font: bold 13px "Segoe UI", Arial, sans-serif !important;
+  cursor: pointer !important;
+  transition: background 0.15s, transform 0.05s !important;
+}
+#siv-cerfa-bar #siv-cerfa-btn:hover:not(:disabled) {
+  background: #FFF8F0 !important;
+}
+#siv-cerfa-bar #siv-cerfa-btn:active:not(:disabled) {
+  transform: scale(0.97) !important;
+}
+#siv-cerfa-bar #siv-cerfa-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+#siv-cerfa-bar #siv-cerfa-status {
+  font-size: 13px !important;
+  font-weight: normal !important;
+  margin-left: 8px !important;
+  color: #FFF !important;
+}
+#siv-cerfa-bar #siv-cerfa-status.siv-cerfa-ok {
+  color: #B6FFB6 !important;
+}
+#siv-cerfa-bar #siv-cerfa-status.siv-cerfa-ko {
+  color: #FFD0D0 !important;
+}
+
+/* Décalage du contenu de la page pour ne pas être masqué par la barre */
+body.siv-cerfa-bar-active {
+  margin-top: 40px !important;
+}

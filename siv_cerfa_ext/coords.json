@@ -1,0 +1,262 @@
+{
+  "13750": {
+    "fields": [
+      {
+        "fs": 14,
+        "key": "immat",
+        "label": "(A) Immatriculation",
+        "w": 230,
+        "x": 130,
+        "y": 293.4
+      },
+      {
+        "fs": 14,
+        "key": "date_immat",
+        "label": "(B) Date 1re immat",
+        "w": 250,
+        "x": 936,
+        "y": 286.4
+      },
+      {
+        "fs": 14,
+        "key": "marque",
+        "label": "Marque (D.1)",
+        "w": 365,
+        "x": 119,
+        "y": 399
+      },
+      {
+        "fs": 14,
+        "key": "vin",
+        "label": "VIN (E)",
+        "w": 305,
+        "x": 117,
+        "y": 483.6
+      },
+      {
+        "fs": 14,
+        "key": "genre",
+        "label": "Genre (J.1)",
+        "w": 145,
+        "x": 535,
+        "y": 482.6
+      },
+      {
+        "fs": 12,
+        "key": "nom_prenom",
+        "label": "Nom Prénom",
+        "w": 704,
+        "x": 186,
+        "y": 661.8
+      },
+      {
+        "fs": 12,
+        "key": "naiss_jour",
+        "label": "Naiss Jour",
+        "w": 38,
+        "x": 128,
+        "y": 701.4
+      },
+      {
+        "fs": 12,
+        "key": "naiss_mois",
+        "label": "Naiss Mois",
+        "w": 43,
+        "x": 182,
+        "y": 700.4
+      },
+      {
+        "fs": 12,
+        "key": "naiss_annee",
+        "label": "Naiss Année",
+        "w": 57,
+        "x": 241,
+        "y": 699.4
+      },
+      {
+        "fs": 12,
+        "key": "naiss_com",
+        "label": "Commune naissance",
+        "w": 410,
+        "x": 365,
+        "y": 702.4
+      },
+      {
+        "fs": 14,
+        "key": "naiss_dep",
+        "label": "Département naiss",
+        "w": 85,
+        "x": 814,
+        "y": 707
+      },
+      {
+        "fs": 12,
+        "key": "num_voie",
+        "label": "N° voie",
+        "w": 50,
+        "x": 214,
+        "y": 776.4
+      },
+      {
+        "fs": 12,
+        "key": "type_voie",
+        "label": "Type voie",
+        "w": 135,
+        "x": 401,
+        "y": 774.4
+      },
+      {
+        "fs": 12,
+        "key": "libelle_voie",
+        "label": "Libellé voie",
+        "w": 475,
+        "x": 587,
+        "y": 775.4
+      },
+      {
+        "fs": 12,
+        "key": "code_postal",
+        "label": "Code postal",
+        "w": 76,
+        "x": 173,
+        "y": 838.4
+      },
+      {
+        "fs": 12,
+        "key": "commune",
+        "label": "Commune",
+        "w": 515,
+        "x": 318,
+        "y": 840.4
+      },
+      {
+        "fs": 12,
+        "key": "telephone",
+        "label": "Téléphone portable",
+        "w": 280,
+        "x": 880,
+        "y": 805
+      },
+      {
+        "fs": 8,
+        "key": "date_signature",
+        "label": "Date signature titulaire (Le :)",
+        "w": 85,
+        "x": 250,
+        "y": 1497
+      }
+    ],
+    "image_height": 1754,
+    "image_width": 1241
+  },
+  "13757": {
+    "fields": [
+      {
+        "fs": 14,
+        "key": "nom_prenom",
+        "label": "Nom Prénom mandant",
+        "w": 508,
+        "x": 270,
+        "y": 349.8
+      },
+      {
+        "fs": 14,
+        "key": "num_voie",
+        "label": "N° voie",
+        "w": 60,
+        "x": 242,
+        "y": 439.8
+      },
+      {
+        "fs": 14,
+        "key": "type_voie",
+        "label": "Type voie",
+        "w": 100,
+        "x": 432,
+        "y": 438.8
+      },
+      {
+        "fs": 14,
+        "key": "libelle_voie",
+        "label": "Libellé voie",
+        "w": 255,
+        "x": 577,
+        "y": 436.6
+      },
+      {
+        "fs": 14,
+        "key": "code_postal",
+        "label": "Code postal",
+        "w": 75,
+        "x": 254,
+        "y": 512.8
+      },
+      {
+        "fs": 14,
+        "key": "commune",
+        "label": "Commune",
+        "w": 260,
+        "x": 422,
+        "y": 515.8
+      },
+      {
+        "fs": 14,
+        "key": "marque",
+        "label": "Marque",
+        "w": 413,
+        "x": 295,
+        "y": 836.8
+      },
+      {
+        "fs": 14,
+        "key": "vin",
+        "label": "VIN",
+        "w": 445,
+        "x": 269,
+        "y": 902.8
+      },
+      {
+        "fs": 14,
+        "key": "immat",
+        "label": "Immatriculation",
+        "w": 255,
+        "x": 562,
+        "y": 1016.8
+      },
+      {
+        "fs": 13,
+        "key": "objet_mandat",
+        "label": "Objet du mandat (cession)",
+        "w": 800,
+        "x": 130,
+        "y": 745
+      },
+      {
+        "fs": 14,
+        "key": "jour",
+        "label": "Date Jour",
+        "w": 45,
+        "x": 596,
+        "y": 1193.8
+      },
+      {
+        "fs": 14,
+        "key": "mois",
+        "label": "Date Mois",
+        "w": 40,
+        "x": 664,
+        "y": 1192.8
+      },
+      {
+        "fs": 14,
+        "key": "annee",
+        "label": "Date Année",
+        "w": 55,
+        "x": 732,
+        "y": 1193.8
+      }
+    ],
+    "image_height": 1755,
+    "image_width": 1240
+  }
+}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SIV→CERFA — Éditeur de coordonnées</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee;
+         display: flex; height: 100vh; overflow: hidden; }
+
+  /* Panel gauche : contrôles */
+  .sidebar {
+    width: 320px; flex-shrink: 0; background: #0f3460;
+    padding: 14px; overflow-y: auto; box-shadow: 2px 0 8px rgba(0,0,0,.4);
+  }
+  .sidebar h1 { font-size: 16px; color: #ffa500; margin-bottom: 4px; }
+  .sidebar small { color: #aaa; display: block; margin-bottom: 14px; font-size: 11px; }
+
+  .form-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .form-tabs button {
+    flex: 1; padding: 6px; background: #1a4a80; color: #fff;
+    border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+  }
+  .form-tabs button.active { background: #ffa500; color: #000; }
+
+  .field-list { max-height: 50vh; overflow-y: auto; }
+  .field-row {
+    display: grid; grid-template-columns: 1fr 50px 50px 30px;
+    gap: 4px; padding: 4px 0; align-items: center;
+    font-size: 11px; border-bottom: 1px solid #1a4a80;
+  }
+  .field-row.selected { background: #ffa500; color: #000; }
+  .field-row label { padding: 2px 4px; cursor: pointer; }
+  .field-row input[type=number] {
+    width: 100%; padding: 2px 4px; background: #1a1a2e; color: #fff;
+    border: 1px solid #555; border-radius: 3px; font-size: 11px;
+  }
+  .field-row.selected input { background: #fff; color: #000; }
+  .field-row .fs { background: #1a1a2e; color: #fff; border: 1px solid #555;
+                   border-radius: 3px; padding: 2px; font-size: 10px; }
+
+  .controls {
+    background: #1a1a2e; padding: 10px; border-radius: 5px;
+    margin-bottom: 10px; font-size: 11px;
+  }
+  .controls h3 { font-size: 12px; color: #ffa500; margin-bottom: 6px; }
+  .controls .key { background: #444; padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+
+  .btn {
+    width: 100%; padding: 8px; background: #ffa500; color: #000;
+    border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+    margin-top: 6px;
+  }
+  .btn:hover { background: #ffb733; }
+  .btn.secondary { background: #1a4a80; color: #fff; }
+  .btn.secondary:hover { background: #2a5a90; }
+
+  /* Zone canvas */
+  .canvas-wrap {
+    flex: 1; overflow: auto; padding: 20px; background: #2a2a3e;
+    position: relative;
+  }
+  .canvas-container {
+    position: relative; display: inline-block;
+    box-shadow: 0 4px 16px rgba(0,0,0,.5);
+  }
+  .canvas-container img {
+    display: block; user-select: none;
+  }
+  .field-marker {
+    position: absolute; border: 1px dashed rgba(255,165,0,.7);
+    background: rgba(255,165,0,.15); cursor: move;
+    font-family: Arial; color: #000; padding: 1px 3px;
+    white-space: nowrap; overflow: hidden;
+    transition: outline 0.1s;
+  }
+  .field-marker.selected {
+    border: 2px solid #ff0066; background: rgba(255,0,102,.2);
+    z-index: 10; outline: 2px solid #fff;
+  }
+  .field-marker:hover { background: rgba(255,165,0,.3); }
+
+  #zoom-info { position: fixed; top: 10px; right: 10px;
+               background: #000a; padding: 6px 10px; border-radius: 4px;
+               font-size: 11px; color: #ffa500; }
+
+  #status { padding: 6px; font-size: 11px; color: #adf;
+            background: #1a1a2e; border-radius: 3px; min-height: 30px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h1>🖨 SIV→CERFA Éditeur</h1>
+  <small>Calibration visuelle des coordonnées</small>
+
+  <div class="form-tabs">
+    <button id="tab-13757" class="active" onclick="switchForm('13757')">CERFA 13757</button>
+    <button id="tab-13750" onclick="switchForm('13750')">CERFA 13750</button>
+  </div>
+
+  <div class="controls">
+    <h3>Contrôles</h3>
+    Cliquer un champ dans la liste ou la page pour le sélectionner.<br>
+    <span class="key">flèches</span> : déplacer 1px<br>
+    <span class="key">Maj+flèches</span> : déplacer 5px<br>
+    <span class="key">+</span> / <span class="key">-</span> : taille police
+  </div>
+
+  <div class="field-list" id="field-list"></div>
+
+  <button class="btn" onclick="generatePreview()">👁️ Aperçu PDF</button>
+  <button class="btn secondary" onclick="saveCoords()">💾 Enregistrer</button>
+  <button class="btn secondary" onclick="resetCoords()">↺ Valeurs par défaut</button>
+
+  <div id="status">Prêt.</div>
+</div>
+
+<div class="canvas-wrap" id="canvas-wrap">
+  <div class="canvas-container" id="canvas-container">
+    <img id="template-img" src="">
+  </div>
+</div>
+
+<div id="zoom-info">100%</div>
+
+<script>
+const SERVER = "http://localhost:5000";
+
+// Données échantillon pour le rendu
+const SAMPLE = {
+  type_demarche: "changement_proprietaire",
+  immatriculation: "GP-910-RT",
+  dossier: "GP-910-RT",
+  vehicule: { vin:"ZFAEFAC22NX162032", marque:"FIAT", genre:"VP", date_premiere_immat:"21/06/2023" },
+  titulaire: {
+    nom:"OMONT", prenom:"INES LEA", date_naissance:"21/01/2006",
+    commune_naissance:"LA TESTE DE BUCH", departement_naissance:"33",
+    num_voie:"5", type_voie:"RUE", libelle_voie:"PASTEUR",
+    code_postal:"59300", commune:"VALENCIENNES"
+  },
+  date_signature: "05/05/2026"
+};
+
+let currentForm = "13757";
+let currentCoords = null;
+let selectedKey = null;
+let imgScale = 1;
+
+async function loadCoords() {
+  const r = await fetch(`${SERVER}/coords`);
+  currentCoords = await r.json();
+}
+
+function switchForm(formId) {
+  currentForm = formId;
+  document.getElementById("tab-13757").classList.toggle("active", formId === "13757");
+  document.getElementById("tab-13750").classList.toggle("active", formId === "13750");
+  document.getElementById("template-img").src = `${SERVER}/template/${formId}.png?_t=${Date.now()}`;
+  document.getElementById("template-img").onload = () => {
+    imgScale = 1;
+    renderFields();
+    updateList();
+  };
+  selectedKey = null;
+}
+
+function renderFields() {
+  const cont = document.getElementById("canvas-container");
+  // Supprimer anciens markers
+  cont.querySelectorAll(".field-marker").forEach(e => e.remove());
+
+  const cfg    = currentCoords[currentForm];
+  const fields = cfg.fields;
+
+  // Valeurs d'exemple
+  const sampleVals = {
+    nom_prenom: "OMONT INES LEA",
+    num_voie: "5", type_voie: "RUE", libelle_voie: "PASTEUR",
+    code_postal: "59300", commune: "VALENCIENNES",
+    marque: "FIAT", vin: "ZFAEFAC22NX162032", genre: "VP",
+    immat: "GP-910-RT", date_immat: "21/06/2023",
+    jour: "05", mois: "05", annee: "2026",
+    naiss_jour: "21", naiss_mois: "01", naiss_annee: "2006",
+    naiss_com: "LA TESTE DE BUCH", naiss_dep: "33",
+  };
+
+  fields.forEach(f => {
+    const m = document.createElement("div");
+    m.className = "field-marker";
+    m.dataset.key = f.key;
+    m.style.left   = (f.x - 1) + "px";
+    m.style.top    = (f.y - f.fs * 1.7) + "px";
+    m.style.width  = f.w + "px";
+    m.style.height = (f.fs * 1.6) + "px";
+    m.style.fontSize = f.fs + "px";
+    m.style.lineHeight = (f.fs * 1.6) + "px";
+    m.textContent = sampleVals[f.key] || f.label;
+    if (f.key === selectedKey) m.classList.add("selected");
+    m.onclick = (e) => { e.stopPropagation(); selectField(f.key); };
+    makeDraggable(m, f);
+    cont.appendChild(m);
+  });
+}
+
+function makeDraggable(el, fieldRef) {
+  let dragX, dragY, startLeft, startTop;
+  el.addEventListener("mousedown", (e) => {
+    selectField(fieldRef.key);
+    dragX = e.clientX; dragY = e.clientY;
+    startLeft = parseInt(el.style.left);
+    startTop  = parseInt(el.style.top);
+    document.addEventListener("mousemove", onDrag);
+    document.addEventListener("mouseup",   onUp);
+    e.preventDefault();
+  });
+  function onDrag(e) {
+    const dx = e.clientX - dragX, dy = e.clientY - dragY;
+    el.style.left = (startLeft + dx) + "px";
+    el.style.top  = (startTop  + dy) + "px";
+    fieldRef.x = startLeft + dx + 1;
+    fieldRef.y = (startTop  + dy) + fieldRef.fs * 1.7;
+    updateList();
+  }
+  function onUp() {
+    document.removeEventListener("mousemove", onDrag);
+    document.removeEventListener("mouseup",   onUp);
+  }
+}
+
+function selectField(key) {
+  selectedKey = key;
+  document.querySelectorAll(".field-marker").forEach(e => {
+    e.classList.toggle("selected", e.dataset.key === key);
+  });
+  document.querySelectorAll(".field-row").forEach(e => {
+    e.classList.toggle("selected", e.dataset.key === key);
+  });
+}
+
+function updateList() {
+  const list = document.getElementById("field-list");
+  list.innerHTML = "";
+  currentCoords[currentForm].fields.forEach(f => {
+    const row = document.createElement("div");
+    row.className = "field-row";
+    row.dataset.key = f.key;
+    if (f.key === selectedKey) row.classList.add("selected");
+
+    const lbl = document.createElement("label");
+    lbl.textContent = f.label;
+    lbl.onclick = () => selectField(f.key);
+    row.appendChild(lbl);
+
+    const xi = document.createElement("input");
+    xi.type = "number"; xi.value = Math.round(f.x);
+    xi.onchange = () => { f.x = parseInt(xi.value); renderFields(); };
+    row.appendChild(xi);
+
+    const yi = document.createElement("input");
+    yi.type = "number"; yi.value = Math.round(f.y);
+    yi.onchange = () => { f.y = parseInt(yi.value); renderFields(); };
+    row.appendChild(yi);
+
+    const fsi = document.createElement("input");
+    fsi.className = "fs"; fsi.type = "number"; fsi.value = f.fs;
+    fsi.min = 6; fsi.max = 14;
+    fsi.onchange = () => { f.fs = parseInt(fsi.value); renderFields(); };
+    row.appendChild(fsi);
+
+    list.appendChild(row);
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!selectedKey) return;
+  if (e.target.tagName === "INPUT") return;
+
+  const f = currentCoords[currentForm].fields.find(x => x.key === selectedKey);
+  if (!f) return;
+  const step = e.shiftKey ? 5 : 1;
+  let handled = true;
+
+  switch (e.key) {
+    case "ArrowLeft":  f.x -= step; break;
+    case "ArrowRight": f.x += step; break;
+    case "ArrowUp":    f.y -= step; break;
+    case "ArrowDown":  f.y += step; break;
+    case "+": case "=": f.fs = Math.min(14, f.fs + 1); break;
+    case "-":           f.fs = Math.max(6,  f.fs - 1); break;
+    default: handled = false;
+  }
+  if (handled) {
+    e.preventDefault();
+    renderFields();
+    updateList();
+  }
+});
+
+async function saveCoords() {
+  const r = await fetch(`${SERVER}/coords`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(currentCoords)
+  });
+  setStatus("✅ Coordonnées sauvegardées dans coords.json");
+}
+
+async function generatePreview() {
+  setStatus("⏳ Génération de l'aperçu…");
+  await saveCoords();
+  const r = await fetch(`${SERVER}/preview/${currentForm}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ coords: currentCoords[currentForm], sample: SAMPLE })
+  });
+  const data = await r.json();
+  if (data.error) { setStatus("❌ " + data.error); return; }
+  window.open(data.url, "_blank");
+  setStatus("✅ Aperçu PDF ouvert dans un nouvel onglet");
+}
+
+async function resetCoords() {
+  if (!confirm("Restaurer les coordonnées par défaut ?")) return;
+  // Recharger depuis le serveur en supprimant coords.json côté backend
+  const r = await fetch(`${SERVER}/coords`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "{}"  // vide = retour aux defaults au prochain reload
+  });
+  location.reload();
+}
+
+function setStatus(msg) { document.getElementById("status").textContent = msg; }
+
+// Init
+(async () => {
+  await loadCoords();
+  switchForm("13757");
+})();
+</script>
+</body>
+</html>

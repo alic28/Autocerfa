@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "SIV → CERFA | Dreux Carte Grise",
+  "version": "15.1.0",
+  "description": "Génère automatiquement les CERFA 13750 et 13757 depuis les écrans SIV. Workflows: changement de titulaire (13750+13757 avec téléphone et date) et déclaration de cession (13757 seul). 100% local.",
+
+  "permissions": [
+    "storage",
+    "downloads"
+  ],
+
+  "host_permissions": [
+    "https://pro-siv.interieur.gouv.fr/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "SIV → CERFA"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://pro-siv.interieur.gouv.fr/*"
+      ],
+      "js": [
+        "lib/pdf-lib.min.js",
+        "pdf-generator.js",
+        "content.js"
+      ],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "templates/*",
+        "coords.json",
+        "config.json"
+      ],
+      "matches": [
+        "https://pro-siv.interieur.gouv.fr/*"
+      ]
+    }
+  ],
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

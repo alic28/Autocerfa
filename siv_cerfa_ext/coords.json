@@ -236,8 +236,8 @@
         "key": "objet_mandat",
         "label": "Objet du mandat (cession)",
         "w": 800,
-        "x": 130,
-        "y": 745
+        "x": 230,
+        "y": 735
       },
       {
         "fs": 14,

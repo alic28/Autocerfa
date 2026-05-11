@@ -27,18 +27,12 @@
 
   // ─── Détection page SIV ───────────────────────────────────────────────
 
-  function getPageType() {
-    const url = window.location.href;
-    if (url.includes("ivo_cht_toVal")) return "recap_changement";
-    // Pattern "ivo_ces_" couvre toutes les pages cession (saisie ET récap).
-    if (/\/do\/ivo_ces_/i.test(url)) return "cession";
-    // Fallback : détection par breadcrumb si l'URL ne matche pas
-    const txt = document.body && document.body.innerText || "";
-    if (/Inscrire\s+la\s+cession/i.test(txt) && !/ivo_cht/i.test(url)) {
-      return "cession";
-    }
-    return "autre";
-  }
+function getPageType() {
+  const url = window.location.href;
+  if (url.includes("ivo_cht_toVal")) return "recap_changement";
+  if (/\/do\/ivo_ces_/i.test(url)) return "cession";
+  return "autre";
+}
 
   // ─── Helpers DOM ──────────────────────────────────────────────────────
 
@@ -190,6 +184,7 @@
         commune,
         telephone
       },
+      objet_mandat: "Changement de titulaire",
       date_signature: { jj, mm, aaaa }
     };
   }
@@ -386,10 +381,12 @@
       }
     }
 
-    const ts        = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, "");
-    const immatStr  = (payload.immat || "AAAAAAA").replace(/-/g, "");
-    const baseName  = `${ts}_${immatStr}`;
-    const generated = [];
+  	const clean = (s) => (s || "").toString().toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+	const nomStr    = clean(payload.titulaire?.nom);
+	const prenomStr = clean(payload.titulaire?.prenom);
+	const immatStr  = (payload.immat || "").toUpperCase().replace(/[^A-Z0-9-]+/g, "");
+	const baseName  = [nomStr, prenomStr, immatStr].filter(Boolean).join("_");
+    	const generated = [];
 
     // CERFA 13757 (mandat) — toujours
     {
@@ -402,7 +399,7 @@
           render: config?.render || {}
         }
       );
-      generated.push({ name: `${baseName}_cerfa_13757.pdf`, blob });
+      generated.push({ name: `CERFA-13757_${baseName}.pdf`, blob });
     }
 
     // CERFA 13750 — UNIQUEMENT pour le changement de propriétaire
@@ -416,7 +413,7 @@
           render: config?.render || {}
         }
       );
-      generated.push({ name: `${baseName}_cerfa_13750.pdf`, blob });
+      generated.push({ name: `CERFA-13750_${baseName}.pdf`, blob });
     }
 
     return { generated, payload };
@@ -454,19 +451,16 @@
 
         if (generated.length === 0) throw new Error("Aucun CERFA généré.");
 
-        for (const { name, blob } of generated) {
-          const url = URL.createObjectURL(blob);
-          const win = window.open(url, "_blank");
-          if (!win) {
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = name;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }
-          setTimeout(() => URL.revokeObjectURL(url), 30_000);
-        }
+for (const { name, blob } of generated) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30_000);
+}
 
         const msg = `✅ ${generated.length} CERFA généré(s)`;
         status.textContent = msg;

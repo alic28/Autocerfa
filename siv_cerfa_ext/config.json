@@ -13,7 +13,7 @@
     "_comment": "Réglages fins du rendu texte. Ajuster si décalage systématique sans toucher au coords.json.",
     "baseline_offset_ratio": 0.72,
     "_baseline_help": "Fraction de fs entre yTop calibré et baseline. 0.72 = ascent pur Helvetica (texte plus haut), 0.85 = défaut (compatible v13), 1.0 = texte plus bas",
-    "y_offset_pt": 11,
+    "y_offset_pt": 10,
     "_y_offset_help": "Décalage vertical en points PDF appliqué à TOUS les champs (négatif = vers le haut)",
     "x_offset_pt": 0,
     "_x_offset_help": "Décalage horizontal en points PDF appliqué à TOUS les champs"

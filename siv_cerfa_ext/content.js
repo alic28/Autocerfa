@@ -146,12 +146,13 @@ for (const line of lines) {
       libelleVoie = mv[3].trim().replace(/\s+/g, " ");
     }
   }
-  if (!codePostal) {
-    const mc = line.match(cpRegex);
-    if (mc) {
-      codePostal = mc[1];
-      commune    = mc[2].trim().replace(/\s+/g, " ");
-    }
+if (!codePostal) {
+  const mc = line.match(cpRegex);
+  if (mc) {
+    codePostal = mc[1];
+    commune    = mc[2].trim().replace(/\s+/g, " ")
+                   .split(/\s+(?:TITULAIRE|CO\-?TITULAIRE|LOCATAIRE|LOUEUR|NATURE|ADRESSE|IDENTIT[ÉE]|MENTIONS?|VEHICULE|VÉHICULE|DOSSIER)\b/i)[0]
+                   .trim();
   }
 }
 

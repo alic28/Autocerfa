@@ -128,29 +128,32 @@ function getPageType() {
       if (i > 0 && tryMatchId(lines[i-1] + " " + lines[i])) break outerId;
     }
 
-    // Adresse titulaire
-    let numVoie = "", typeVoie = "", libelleVoie = "", codePostal = "", commune = "";
+// Adresse titulaire — extraction ligne par ligne (gère étage + lieu-dit)
+let numVoie = "", typeVoie = "", libelleVoie = "", codePostal = "", commune = "";
 
-    const adrLineRegex = /\b(\d+)\s+(RUE|AV|AVENUE|BD|BOULEVARD|ALL[ÉE]E|PLACE|CHEMIN|ROUTE|IMPASSE|SQUARE|QUAI|CHE|CHS|VOIE|RTE|PL|PASSAGE|COUR|COURS|RES|RESIDENCE|DOMAINE|LOTISSEMENT|LIEU.DIT|LIEU.|HAMEAU|FAUBOURG|VILLAGE|TRAVERSE|MONTEE|RAMPE|SENTIER|VENELLE|CARREFOUR|ESPLANADE|PARVIS|PROMENADE|ROND.POINT|RUELLE|PARC|PORT)\s+([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0-9\s\-']{1,50}?)\s+(\d{5})\s+([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\-']+(?:\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\-']+){0,5})/i;
+// Ligne "N° TYPE LIBELLE" (ex: "5 RUE PASTEUR")
+const voieRegex = /^\s*(\d+)\s+(RUE|AV|AVENUE|BD|BOULEVARD|ALL[ÉE]E|PLACE|CHEMIN|ROUTE|IMPASSE|SQUARE|QUAI|CHE|CHS|VOIE|RTE|PL|PASSAGE|COUR|COURS|RES|RESIDENCE|DOMAINE|LOTISSEMENT|HAMEAU|FAUBOURG|VILLAGE|TRAVERSE|MONTEE|RAMPE|SENTIER|VENELLE|CARREFOUR|ESPLANADE|PARVIS|PROMENADE|ROND.POINT|RUELLE|PARC|PORT)\s+([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0-9\s\-']{1,60})\s*$/i;
 
-    function tryMatchAdr(text) {
-      const m = text.match(adrLineRegex);
-      if (!m) return false;
-      numVoie     = m[1];
-      typeVoie    = m[2];
-      libelleVoie = m[3].trim().replace(/\s+/g, " ");
-      codePostal  = m[4];
-      commune     = m[5].trim().replace(/\s+/g, " ")
-                      .split(/\s+(?:TITULAIRE|MENTIONS?|SANS|USAGE|VEHICULE|VÉHICULE|DOSSIER|CO\-?TITULAIRE|LOCATAIRE|LOUEUR|NATURE|ADRESSE|IDENTIT[ÉE])\b/i)[0]
-                      .trim();
-      return true;
+// Ligne "CP COMMUNE" (ex: "59300 VALENCIENNES")
+const cpRegex = /^\s*(\d{5})\s+([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\-']+(?:\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\-']+){0,5})\s*$/i;
+
+for (const line of lines) {
+  if (!numVoie) {
+    const mv = line.match(voieRegex);
+    if (mv) {
+      numVoie     = mv[1];
+      typeVoie    = mv[2];
+      libelleVoie = mv[3].trim().replace(/\s+/g, " ");
     }
-
-    outerAdr:
-    for (let i = 0; i < lines.length; i++) {
-      if (tryMatchAdr(lines[i])) break;
-      if (i + 1 < lines.length && tryMatchAdr(lines[i] + " " + lines[i+1])) break outerAdr;
+  }
+  if (!codePostal) {
+    const mc = line.match(cpRegex);
+    if (mc) {
+      codePostal = mc[1];
+      commune    = mc[2].trim().replace(/\s+/g, " ");
     }
+  }
+}
 
     // ── NOUVEAU v15 : Téléphone portable du titulaire ────────────────
     // Saisie sur l'écran récap dans <input id="telephonePortable">

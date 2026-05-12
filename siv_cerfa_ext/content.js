@@ -155,6 +155,7 @@ if (!codePostal) {
                    .trim();
   }
 }
+}
 
     // ── NOUVEAU v15 : Téléphone portable du titulaire ────────────────
     // Saisie sur l'écran récap dans <input id="telephonePortable">

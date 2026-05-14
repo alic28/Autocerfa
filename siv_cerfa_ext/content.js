@@ -154,7 +154,7 @@ if (!codePostal) {
                    .split(/\s+(?:TITULAIRE|CO\-?TITULAIRE|LOCATAIRE|LOUEUR|NATURE|ADRESSE|IDENTIT[ÉE]|MENTIONS?|VEHICULE|VÉHICULE|DOSSIER)\b/i)[0]
                    .trim();
   }
-}
+ }
 }
 
     // ── NOUVEAU v15 : Téléphone portable du titulaire ────────────────
@@ -420,7 +420,17 @@ if (!codePostal) {
       );
       generated.push({ name: `CERFA-13750_${baseName}.pdf`, blob });
     }
-
+// Fusion 13750 + 13757 en un seul PDF (changement de titulaire uniquement)
+  if (payload.type_demarche === "changement_proprietaire" && generated.length === 2) {
+    const blob13750 = generated.find(g => g.name.startsWith("CERFA-13750_"))?.blob;
+    const blob13757 = generated.find(g => g.name.startsWith("CERFA-13757_"))?.blob;
+    if (blob13750 && blob13757) {
+      // Ordre logique : demande d'immatriculation (13750) puis mandat (13757)
+      const mergedBlob = await window.SivCerfaPdf.mergePdfs([blob13750, blob13757]);
+      generated.length = 0;
+      generated.push({ name: `CERFA-13750-13757_${baseName}.pdf`, blob: mergedBlob });
+    }
+  }
     return { generated, payload };
   }
 

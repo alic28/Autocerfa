@@ -256,7 +256,24 @@ if (cs > 0) {
     const pdfBytes = await pdfDoc.save();
     return new Blob([pdfBytes], { type: "application/pdf" });
   }
-
-  global.SivCerfaPdf = { fillCerfa, detectFormat };
+/**
+   * Fusionne plusieurs PDFs en un seul, dans l'ordre fourni.
+   * @param {Blob[]} blobs - Liste de blobs PDF à fusionner
+   * @returns {Promise<Blob>}
+   */
+  async function mergePdfs(blobs) {
+    const { PDFDocument } = global.PDFLib;
+    const merged = await PDFDocument.create();
+    for (const blob of blobs) {
+      const buf = await blob.arrayBuffer();
+      const doc = await PDFDocument.load(buf);
+      const pages = await merged.copyPages(doc, doc.getPageIndices());
+      pages.forEach(p => merged.addPage(p));
+    }
+    const bytes = await merged.save();
+    return new Blob([bytes], { type: "application/pdf" });
+  }
+  // -- global.SivCerfaPdf = { fillCerfa, detectFormat };
+  global.SivCerfaPdf = { fillCerfa, detectFormat, mergePdfs };
 
 })(window);
